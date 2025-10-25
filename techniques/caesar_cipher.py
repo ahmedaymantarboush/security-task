@@ -14,7 +14,7 @@ class CaesarCipher(Technique):
 
     def encrypt(self, plaintext, offset=None):
         ciphertext = ""
-        offset = self.set_offset(offset)
+        offset = self.set_offset(offset) if offset is None else offset
         for char in str(plaintext):
             if char.isupper():
                 base = ord('A')
@@ -26,9 +26,9 @@ class CaesarCipher(Technique):
             else:
                 ciphertext += char
         return ciphertext
-    
-    def decrypt(self, ciphertext):
-        offset = self.set_offset()
+
+    def decrypt(self, ciphertext, offset=None):
+        offset = self.set_offset(offset) if offset is None else offset
         return self.encrypt(ciphertext, -offset)
 
     def brute_force(self, ciphertext):
