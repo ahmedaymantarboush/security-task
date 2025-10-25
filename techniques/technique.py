@@ -21,13 +21,13 @@ class Technique(ABC):
             raise ValueError("Invalid option selected.")
             
     @abstractmethod
-    def encrypt(self):
+    def encrypt(self, plaintext):
         pass
     
     @abstractmethod
-    def decrypt(self):
+    def decrypt(self, ciphertext):
         pass
     
     @abstractmethod
-    def brute_force(self):
+    def brute_force(self, ciphertext):
         pass

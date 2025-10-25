@@ -1,0 +1,15 @@
+from .technique import Technique
+
+
+class CaesarssCipher(Technique):
+    def __init__(self):
+        pass
+
+    def encrypt(self, plaintext):
+        pass
+
+    def decrypt(self, ciphertext):
+        pass
+
+    def brute_force(self, ciphertext):
+        pass
