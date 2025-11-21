@@ -1,18 +1,37 @@
 import sys
-from techniques import CaesarCipher
+import techniques as techniques_pkg
+from techniques.technique import Technique
 from create_technique import create_technique
+import pkgutil
+import importlib
+import inspect
 
 
 def run_cipher():
     """Run the cipher encryption/decryption interface."""
-    techniques = {
-        '1': CaesarCipher,
-    }
     print()
     print("Choose a technique:")
-    print("    1. Caesar Cipher")
-    technique = input("Enter choice (1): ")
-    technique_class = techniques.get(technique, CaesarCipher)
+    techniques = load_classes_from_package(techniques_pkg, Technique)
+    
+    # Display available techniques
+    technique_list = [(name, cls) for name, cls in techniques.items() if name != 'Technique']
+    for i, (name, _) in enumerate(technique_list, 1):
+        print(f"    {i}. {name}")
+    choice = input(f"Enter choice (1-{len(technique_list)}) [default 1]: ").strip()
+
+    if choice == "":
+        idx = 0
+    else:
+        try:
+            idx = int(choice) - 1
+            if not (0 <= idx < len(technique_list)):
+                print("Invalid choice, default is 1.")
+                idx = 0
+        except (ValueError, IndexError):
+            print("Invalid choice, default is 1.")
+            idx = 0
+
+    technique_class = technique_list[idx][1]
     technique_instance = technique_class()
     result = technique_instance.execute()
 
@@ -38,6 +57,20 @@ def show_help():
     print("    python main.py --create RSACipher")
     print()
 
+def load_classes_from_package(package, base_class=None):
+    classes = {}
+
+    for finder, module_name, ispkg in pkgutil.walk_packages(package.__path__, package.__name__ + "."):
+        module = importlib.import_module(module_name)
+
+        for name, obj in inspect.getmembers(module, inspect.isclass):
+            if obj.__module__ != module.__name__:
+                continue
+            if base_class and not issubclass(obj, base_class):
+                continue
+            classes[name] = obj
+
+    return classes
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
