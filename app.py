@@ -22,6 +22,7 @@ def load_classes_from_package(package, base_class=None):
             classes[name] = obj
     return classes
 
+
 @app.route('/')
 def index():
     """Render the main page."""
