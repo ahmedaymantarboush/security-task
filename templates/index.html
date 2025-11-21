@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Advanced encryption and decryption tool with AES and Caesar Cipher">
+    <title>Security Techniques - Encryption & Decryption</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <div class="nav-content">
+            <div class="nav-brand">
+                <span class="brand-icon">🔐</span>
+                <span class="brand-text">Security Techniques</span>
+            </div>
+            <div class="nav-subtitle">Advanced Encryption & Decryption</div>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <!-- Left Sidebar - Controls -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="section-header">
+                    <span class="section-icon">🎯</span>
+                    <h2>Select Technique</h2>
+                </div>
+                <select id="techniqueSelect" class="select-input">
+                    <option value="">Choose a technique...</option>
+                </select>
+                <div id="techniqueInfo" class="info-box"></div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-header">
+                    <span class="section-icon">⚙️</span>
+                    <h2>Operation Mode</h2>
+                </div>
+                <div class="operation-tabs">
+                    <button class="tab-button active" data-operation="E">
+                        <span class="icon">🔒</span>
+                        <span class="tab-label">Encrypt</span>
+                    </button>
+                    <button class="tab-button" data-operation="D">
+                        <span class="icon">🔓</span>
+                        <span class="tab-label">Decrypt</span>
+                    </button>
+                    <button class="tab-button" data-operation="B">
+                        <span class="icon">🔨</span>
+                        <span class="tab-label">Brute Force</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Parameters Panel -->
+            <div id="paramsPanel" class="sidebar-section params-section" style="display: none;">
+                <div class="section-header">
+                    <span class="section-icon">🔧</span>
+                    <h2>Parameters</h2>
+                </div>
+                <div id="paramsContent"></div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="workspace-grid">
+                <!-- Input Panel -->
+                <div class="workspace-card input-workspace">
+                    <div class="workspace-header">
+                        <div class="workspace-title">
+                            <span class="workspace-icon">📝</span>
+                            <h3>Input</h3>
+                        </div>
+                        <button id="clearBtn" class="btn-icon" title="Clear">
+                            <span>✕</span>
+                        </button>
+                    </div>
+                    <div class="workspace-body">
+                        <textarea id="inputText" placeholder="Enter your text here..." rows="10"></textarea>
+                    </div>
+                    <div class="workspace-footer">
+                        <button id="executeBtn" class="btn btn-primary btn-large">
+                            <span class="icon">▶</span>
+                            <span>Execute Operation</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="workspace-card output-workspace">
+                    <div class="workspace-header">
+                        <div class="workspace-title">
+                            <span class="workspace-icon">📤</span>
+                            <h3>Output</h3>
+                        </div>
+                        <button id="copyBtn" class="btn-icon" style="display: none;" title="Copy to clipboard">
+                            <span>📋</span>
+                        </button>
+                    </div>
+                    <div class="workspace-body">
+                        <div id="outputContainer">
+                            <div id="loadingSpinner" class="spinner" style="display: none;">
+                                <div class="spinner-circle"></div>
+                                <p>Processing...</p>
+                            </div>
+                            <div id="outputText" class="output-text">
+                                <div class="empty-state">
+                                    <span class="empty-icon">✨</span>
+                                    <p>Results will appear here</p>
+                                </div>
+                            </div>
+                            <div id="extraInfo" class="extra-info"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="app-footer">
+        <p>Powered by Flask & Modern Web Technologies | Auto-discovering encryption techniques</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
