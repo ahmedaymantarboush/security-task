@@ -55,11 +55,31 @@ class AESCipher(Technique):
     def _ensure_key_initialized(self):
         if self._key_initialized:
             return
-        ks = self._initial_key_size or {' 1':128,'2':192,'3':256}.get(input("\nAES: 1)128 2)192 3)256\nChoice: ").strip() or '1', 128)
-        k = self._initial_key or (input("Key: ") if input("\n1)Random 2)Custom\nChoice: ").strip()=='2' else None)
+        
+        # Use provided key_size or default to 128
+        ks = self._initial_key_size if self._initial_key_size else 128
+        
+        # Use provided key or generate random
+        k = self._initial_key
+        
         self.key_size, self.key_length, self.num_rounds = ks, ks//8, {128:10,192:12,256:14}[ks]
-        self.key = (os.urandom(self.key_length) if k is None else (k.encode() if isinstance(k,str) else k+b'\0'*self.key_length)[:self.key_length])
-        self.round_keys, self._key_initialized = self.key_expansion(), True
+        
+        # Generate key: random if None, otherwise encode/pad to correct length
+        if k is None:
+            self.key = os.urandom(self.key_length)
+        else:
+            # Handle string keys by encoding
+            if isinstance(k, str):
+                k = k.encode()
+            # Pad or truncate to correct length
+            if len(k) < self.key_length:
+                k = k + b'\0' * (self.key_length - len(k))
+            self.key = k[:self.key_length]
+        
+        self.round_keys = self.key_expansion()
+        self._key_initialized = True
+        
+        # Print key info for debugging (will appear in server logs)
         print(f"\nKey: {self.key.hex()} ({ks}-bit, {self.num_rounds} rounds)")
 
     def key_expansion(self):
