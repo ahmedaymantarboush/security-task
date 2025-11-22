@@ -2,14 +2,92 @@ from .technique import Technique
 
 
 class {{TechniqueName}}(Technique):
+    """
+    Implementation of {{TechniqueName}}.
+    TODO: Add a detailed description of this encryption technique.
+    """
+    
     def __init__(self):
+        """Initialize the technique."""
         pass
 
     def encrypt(self, plaintext):
+        """
+        Encrypt the plaintext.
+        
+        Args:
+            plaintext (str): The text to encrypt.
+            
+        Returns:
+            str: The encrypted ciphertext.
+        """
+        # TODO: Implement encryption logic
         pass
 
     def decrypt(self, ciphertext):
+        """
+        Decrypt the ciphertext.
+        
+        Args:
+            ciphertext (str): The text to decrypt.
+            
+        Returns:
+            str: The decrypted plaintext.
+        """
+        # TODO: Implement decryption logic
         pass
 
     def brute_force(self, ciphertext):
+        """
+        Attempt to break the cipher through brute force or analysis.
+        
+        Args:
+            ciphertext (str): The text to crack.
+            
+        Returns:
+            str or list: Possible plaintext(s) or analysis result.
+        """
+        # TODO: Implement brute force logic
+        # Return a list for multiple possibilities, or a string for single result
         pass
+    
+    def get_description(self):
+        """
+        Return a description of the technique for UI display.
+        
+        Returns:
+            str: Brief description of the technique.
+        """
+        # TODO: Update with a user-friendly description
+        return "{{TechniqueName}} - encryption technique."
+    
+    def get_params(self):
+        """
+        Return parameter definitions for this technique.
+        Used to auto-generate UI form fields.
+        
+        Returns:
+            list: List of parameter dictionaries using create_param() helper.
+        """
+        # TODO: Define parameters needed for this technique
+        # Example:
+        # return [
+        #     self.create_param(
+        #         'key',
+        #         'Encryption Key',
+        #         'text',
+        #         placeholder='Enter your key',
+        #         required=True
+        #     ),
+        #     self.create_param(
+        #         'mode',
+        #         'Cipher Mode',
+        #         'radio',
+        #         default='ECB',
+        #         options=[
+        #             {'value': 'ECB', 'label': 'Electronic Codebook'},
+        #             {'value': 'CBC', 'label': 'Cipher Block Chaining'}
+        #         ]
+        #     )
+        # ]
+        return []

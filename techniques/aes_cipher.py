@@ -237,3 +237,58 @@ class AESCipher(Technique):
         Calculate feasibility of brute forcing the key.
         """
         return f"Infeasible: AES-{self.key_size} has 2^{self.key_size} = {2**self.key_size:,} possible keys. At 1 billion keys/sec, it would take {2**self.key_size / (10**9 * 60 * 60 * 24 * 365):.2e} years to try all combinations."
+    
+    def get_extra_info(self):
+        """
+        Return extra information about the AES encryption.
+        
+        Returns:
+            dict: Dictionary containing key information and encryption details.
+        """
+        if not self._key_initialized:
+            return {}
+        
+        extra_info = {}
+        if hasattr(self, 'key') and self.key:
+            key_hex = self.key.hex()
+            extra_info['key_hex'] = key_hex
+            extra_info['key_string'] = key_hex  # Return hex as the primary key string
+            extra_info['key_size'] = self.key_size
+            extra_info['num_rounds'] = self.num_rounds
+            
+            # Try to show UTF-8 representation if it's printable
+            try:
+                key_utf8 = self.key.decode('utf-8', errors='replace')
+                if key_utf8.isprintable():
+                    extra_info['key_utf8'] = key_utf8
+            except:
+                pass
+        
+        return extra_info
+    
+    def get_description(self):
+        """Return description for UI."""
+        return "Advanced Encryption Standard - industry-standard symmetric encryption with 128/192/256-bit keys."
+    
+    def get_params(self):
+        """Return parameter definitions for UI auto-generation."""
+        return [
+            self.create_param(
+                'key_size', 
+                'Key Size', 
+                'radio',
+                default=128,
+                options=[
+                    {'value': 128, 'label': '128-bit'},
+                    {'value': 192, 'label': '192-bit'},
+                    {'value': 256, 'label': '256-bit'}
+                ]
+            ),
+            self.create_param(
+                'key',
+                'Custom Key (optional - leave empty for random)',
+                'text',
+                placeholder='Leave empty for random key generation',
+                required=False
+            )
+        ]

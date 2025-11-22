@@ -50,16 +50,49 @@ def get_techniques():
     technique_list = [name for name in techniques.keys() if name != 'Technique']
     return jsonify({'techniques': sorted(technique_list)})
 
+@app.route('/api/technique_info/<technique_name>', methods=['GET'])
+def get_technique_info(technique_name):
+    """
+    API Endpoint: Get information about a specific technique.
+    
+    Args:
+        technique_name: Name of the technique class
+        
+    Returns:
+        JSON response with technique description and parameters.
+    """
+    try:
+        techniques = load_classes_from_package(techniques_pkg, Technique)
+        if technique_name not in techniques:
+            return jsonify({'error': f'Technique {technique_name} not found'}), 404
+        
+        technique_class = techniques[technique_name]
+        # Create temporary instance to get metadata
+        try:
+            temp_instance = technique_class()
+        except:
+            # If instantiation fails, create with basic defaults
+            temp_instance = technique_class(**{})
+        
+        return jsonify({
+            'name': technique_name,
+            'description': temp_instance.get_description(),
+            'params': temp_instance.get_params()
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to get technique info: {str(e)}'}), 500
+
+
 @app.route('/api/execute', methods=['POST'])
 def execute_technique():
     """
     API Endpoint: Execute encryption/decryption/brute force operation.
     
     Expects JSON payload with:
-    - technique: Name of the technique class (e.g., 'AESCipher')
+    - technique: Name of the technique class
     - operation: 'E' (Encrypt), 'D' (Decrypt), or 'B' (Brute Force)
     - input_text: The text to process
-    - params: Optional dictionary of technique-specific parameters (e.g., key_size, offset)
+    - params: Optional dictionary of technique-specific parameters
     
     Returns:
         JSON response with result or error message.
@@ -94,12 +127,8 @@ def execute_technique():
         # Execute the operation (matching main.py's execute pattern)
         result = technique_instance.execute(option=operation, input_text=input_text)
         
-        # Handle special case for AES key info to return to the client
-        extra_info = {}
-        if technique_name == 'AESCipher' and hasattr(technique_instance, 'key'):
-            extra_info['key_hex'] = technique_instance.key.hex()
-            extra_info['key_size'] = technique_instance.key_size
-            extra_info['num_rounds'] = technique_instance.num_rounds
+        # Get extra information from the technique (empty dict by default)
+        extra_info = technique_instance.get_extra_info()
         
         return jsonify({
             'success': True,

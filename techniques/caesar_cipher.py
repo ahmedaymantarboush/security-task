@@ -66,3 +66,21 @@ class CaesarCipher(Technique):
         for offset in range(1, 26):
             probable_plaintexts.append(self.encrypt(ciphertext, -offset))
         return probable_plaintexts
+    
+    def get_description(self):
+        """Return description for UI."""
+        return "Classical substitution cipher that shifts letters by a fixed offset. Simple but historically significant."
+    
+    def get_params(self):
+        """Return parameter definitions for UI auto-generation."""
+        return [
+            self.create_param(
+                'offset',
+                'Offset (1-25, optional - will prompt if not provided)',
+                'number',
+                placeholder='Leave empty for interactive prompt',
+                min=1,
+                max=25,
+                required=False
+            )
+        ]

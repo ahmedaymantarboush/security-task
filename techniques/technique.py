@@ -59,3 +59,78 @@ class Technique(ABC):
         Must be implemented by subclasses.
         """
         pass
+    
+    def get_extra_info(self):
+        """
+        Return extra information about the technique.
+        Can be overridden by subclasses to provide additional metadata.
+        
+        Returns:
+            dict: Empty dict by default. Subclasses can return custom metadata.
+        """
+        return {}
+    
+    def get_description(self):
+        """
+        Return a description of the technique for UI display.
+        
+        Returns:
+            str: Brief description of the technique.
+        """
+        return "Encryption technique."
+    
+    @staticmethod
+    def create_param(name, label, param_type='text', **kwargs):
+        """
+        Helper function to create a parameter definition.
+        
+        Args:
+            name (str): Parameter name (used as key in params dict)
+            label (str): Display label for the UI
+            param_type (str): Type of input - 'text', 'number', 'radio'
+            **kwargs: Additional options:
+                - placeholder (str): Placeholder text
+                - min (int): Minimum value for number inputs
+                - max (int): Maximum value for number inputs
+                - required (bool): Whether the parameter is required
+                - default: Default value
+                - options (list): For radio type - list of dicts with 'value' and 'label'
+        
+        Returns:
+            dict: Parameter definition dictionary
+        
+        Example:
+            create_param('key_size', 'Key Size', 'radio', 
+                         default=128,
+                         options=[
+                             {'value': 128, 'label': '128-bit'},
+                             {'value': 256, 'label': '256-bit'}
+                         ])
+        """
+        param = {
+            'name': name,
+            'label': label,
+            'type': param_type
+        }
+        
+        # Add all additional keyword arguments
+        param.update(kwargs)
+        
+        return param
+    
+    def get_params(self):
+        """
+        Return parameter definitions for this technique.
+        Used to auto-generate UI form fields.
+        
+        Returns:
+            list: List of parameter dictionaries. Each dict should have:
+                - name: parameter name
+                - label: display label
+                - type: 'text', 'number', 'radio'
+                - options: (for radio) list of dicts with 'value' and 'label'
+                - placeholder: (optional) placeholder text
+                - min, max: (optional, for number)
+                - required: (optional) boolean
+        """
+        return []
