@@ -7,10 +7,20 @@ import inspect
 import secrets
 
 app = Flask(__name__)
+# Generate a secure secret key for session management
 app.secret_key = secrets.token_hex(32)
 
 def load_classes_from_package(package, base_class=None):
-    """Load all technique classes from the package."""
+    """
+    Load all technique classes from the package dynamically.
+    
+    Args:
+        package: The package module to search.
+        base_class: The class to filter by (optional).
+        
+    Returns:
+        dict: A dictionary of class names to class objects.
+    """
     classes = {}
     for finder, module_name, ispkg in pkgutil.walk_packages(package.__path__, package.__name__ + "."):
         module = importlib.import_module(module_name)
@@ -22,21 +32,38 @@ def load_classes_from_package(package, base_class=None):
             classes[name] = obj
     return classes
 
+
 @app.route('/')
 def index():
-    """Render the main page."""
+    """Render the main page of the web application."""
     return render_template('index.html')
 
 @app.route('/api/techniques', methods=['GET'])
 def get_techniques():
-    """Get list of available techniques."""
+    """
+    API Endpoint: Get list of available encryption techniques.
+    
+    Returns:
+        JSON response containing a sorted list of technique names.
+    """
     techniques = load_classes_from_package(techniques_pkg, Technique)
     technique_list = [name for name in techniques.keys() if name != 'Technique']
     return jsonify({'techniques': sorted(technique_list)})
 
 @app.route('/api/execute', methods=['POST'])
 def execute_technique():
-    """Execute encryption/decryption/brute force operation."""
+    """
+    API Endpoint: Execute encryption/decryption/brute force operation.
+    
+    Expects JSON payload with:
+    - technique: Name of the technique class (e.g., 'AESCipher')
+    - operation: 'E' (Encrypt), 'D' (Decrypt), or 'B' (Brute Force)
+    - input_text: The text to process
+    - params: Optional dictionary of technique-specific parameters (e.g., key_size, offset)
+    
+    Returns:
+        JSON response with result or error message.
+    """
     try:
         data = request.json
         technique_name = data.get('technique')
@@ -49,31 +76,25 @@ def execute_technique():
         if not all([technique_name, operation, input_text]):
             return jsonify({'error': 'Missing required fields'}), 400
         
-        # Load the technique class
+        # Load the technique class dynamically
         techniques = load_classes_from_package(techniques_pkg, Technique)
         if technique_name not in techniques:
             return jsonify({'error': f'Technique {technique_name} not found'}), 404
         
         technique_class = techniques[technique_name]
         
-        # Initialize technique with parameters
-        if technique_name == 'AESCipher':
-            key_size = params.get('key_size')
-            custom_key = params.get('custom_key')
-            technique_instance = technique_class(
-                key=custom_key if custom_key else None,
-                key_size=key_size
-            )
-        elif technique_name == 'CaesarCipher':
-            offset = params.get('offset')
-            technique_instance = technique_class(offset=offset)
-        else:
+        # Instantiate technique with parameters (like main.py does with technique_class())
+        # Pass params as keyword arguments for flexibility
+        try:
+            technique_instance = technique_class(**params) if params else technique_class()
+        except TypeError:
+            # If params are invalid, try without params
             technique_instance = technique_class()
         
-        # Execute the operation
+        # Execute the operation (matching main.py's execute pattern)
         result = technique_instance.execute(option=operation, input_text=input_text)
         
-        # Handle special case for AES key info
+        # Handle special case for AES key info to return to the client
         extra_info = {}
         if technique_name == 'AESCipher' and hasattr(technique_instance, 'key'):
             extra_info['key_hex'] = technique_instance.key.hex()
