@@ -1,6 +1,8 @@
 from .technique import Technique
 import os
 import base64
+import secrets
+import string
 
 
 class AESCipher(Technique):
@@ -77,7 +79,10 @@ class AESCipher(Technique):
         
         # Generate key: random if None, otherwise encode/pad to correct length
         if k is None:
-            self.key = os.urandom(self.key_length)
+            # Generate random alphanumeric key
+            alphabet = string.ascii_letters + string.digits
+            random_key_str = ''.join(secrets.choice(alphabet) for _ in range(self.key_length))
+            self.key = random_key_str.encode('utf-8')
         else:
             # Handle string keys by encoding
             if isinstance(k, str):
