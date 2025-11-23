@@ -2,6 +2,8 @@
 
 A modern web application and CLI tool for encryption and decryption using various cryptographic techniques, including Caesar Cipher and AES encryption.
 
+**Live Demo:** [https://security-task.tarboush.net/](https://security-task.tarboush.net/)
+
 ## Features
 
 - **Modern UI**: Sleek sidebar layout with glassmorphism effects and responsive design.
@@ -57,12 +59,14 @@ Security Task/
 ### Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone <repository-url>
    cd Security\ Task
    ```
 
 2. **Create a virtual environment:**
+
    ```bash
    python3 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
@@ -87,9 +91,11 @@ Security Task/
 #### Command Line Interface (CLI)
 
 1. **Run the interactive CLI:**
+
    ```bash
    python main.py
    ```
+
    Follow the on-screen prompts to choose a technique and perform operations.
 
 2. **Create a new technique:**
@@ -110,6 +116,7 @@ This project is configured for easy deployment on Vercel using GitHub Actions.
 ### Manual Deployment
 
 1. **Login to Vercel:**
+
    ```bash
    vercel login
    ```
@@ -125,11 +132,13 @@ The project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) 
 
 1. **Setup Secrets:**
    You need to add the following secrets to your GitHub repository:
+
    - `VERCEL_TOKEN`: Your Vercel API token.
    - `VERCEL_ORG_ID`: Your Vercel Organization ID.
    - `VERCEL_PROJECT_ID`: Your Vercel Project ID.
 
    You can use the provided helper script to set this up (requires GitHub CLI `gh`):
+
    ```bash
    ./setup_cicd.sh
    ```
@@ -139,9 +148,11 @@ The project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) 
 The system is designed to be extensible. To add a new encryption technique:
 
 1. **Run the creation command:**
+
    ```bash
    python main.py --create MyNewCipher
    ```
+
    This creates `techniques/my_new_cipher.py`.
 
 2. **Implement the logic:**
